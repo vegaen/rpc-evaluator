@@ -14,31 +14,12 @@ import edu.ucsb.cs.rpc.base.InvocationResult;
 import edu.ucsb.cs.rpc.base.RPCEvaluatorException;
 import edu.ucsb.cs.rpc.base.Server;
 
-
 public class JsonClient implements Client {
 	
-	public static final String JSON_ENDPOINT = "json.Endpoint";
+	public static final String JSON_ENDPOINT = "JSON.Endpoint";
+
 	private JsonRpcHttpClient client;
 	private Server serverService;
-	
-/*
-	public static void main(String[] args) {
-		JsonClient jsonClient = new JsonClient();
-		
-		try {
-			jsonClient.init(null);
-			
-			HashMap<Integer, Integer> map = new HashMap<Integer, Integer>();
-			map.put(23, 45);
-			map.put(1, 99);
-			map.put(42, 9695965);
-			
-			System.out.println(jsonClient.echoMap(map).getLatency());
-		} catch (RPCEvaluatorException e) {
-			e.printStackTrace();
-		}
-	}
-*/	
 	
 	@Override
 	public void init(Properties properties) throws RPCEvaluatorException {
@@ -69,7 +50,7 @@ public class JsonClient implements Client {
 
 	@Override
 	public void destroy() {
-		
+
 	}
 
 	@Override
@@ -160,11 +141,18 @@ public class JsonClient implements Client {
         }
         long end = System.currentTimeMillis();
 
-        if ((response == null || !response.equals(o)) && t == null) {
+        if ((response == null || !objectEquals(o, response)) && t == null) {
             t = new RPCEvaluatorException("Invalid echo response");
         }
         return report(start, end, t);
 	}
+
+    private boolean objectEquals(DataObject o1, DataObject o2) {
+        return o1.getCharacter() == o2.getCharacter() &&
+                o1.getDecimal() == o2.getDecimal() &&
+                o1.getInteger() == o2.getInteger() &&
+                o1.getString().equals(o2.getString());
+    }
 
 	@Override
 	public InvocationResult echoMap(Map<Integer, Integer> map) {
